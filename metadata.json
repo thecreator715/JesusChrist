@@ -1,0 +1,7 @@
+{
+  "name": "Sanctus Oratio",
+  "description": "A spiritual companion app that generates personalized prayers in both English and Latin using AI, allowing users to save and reflect on them.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
