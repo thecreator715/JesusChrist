@@ -48,6 +48,9 @@ const cap = async (name: string): Promise<any> => {
 };
 const LS = 'sanctus_club_state';
 
+/** True inside the claude.ai artifact runtime. False on plain static hosting (GitHub Pages), where payments cannot be fulfilled. */
+export const hasRuntime = (): boolean => typeof window !== 'undefined' && typeof (window as any).claude?.use === 'function';
+
 export function useClub() {
   const [db, setDb] = useState<any>(null);
   const [userCap, setUserCap] = useState<any>(null);
@@ -265,7 +268,7 @@ export function useClub() {
   };
 
   return {
-    ready, dbAvailable: !!db, uid, isOwner, canEdit, isMember, hasAccess, pending, error,
+    runtime: hasRuntime(), ready, dbAvailable: !!db, uid, isOwner, canEdit, isMember, hasAccess, pending, error,
     purchaseInvoices: Object.fromEntries(Object.entries(purchaseReqs).map(([u, v]: [string, any]) => [u, v?.invoices || {}])) as Record<string, Record<string, string>>, config, checkoutUrl, clubPayUrl, donations, prayerCredits, claimPrayerPayment, consumePrayerCredit, profiles, badges, usernameOf, badgesOf, memberNoOf, saveUsername, members, requests, reviews, allBooks, nameOf, names,
     priceOf, buyUrlOf, bookMetaUrl, ratingOf, accessOf, canRead, ownsBook, pendingBook, purchaseReqs, requestPurchase, approvePurchase, declinePurchase, reader, recordPage, toggleBookmark, resetBookProgress, toggleFavorite,
     requestJoin, approve, decline, revoke, saveCheckout, saveBookMeta, addBook, removeBook, saveReview, deleteReview,

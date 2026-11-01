@@ -6,7 +6,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon, StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import { Logo } from './Logo';
-import { Club, JOIN_PRICE, PREVIEW_PAGES, BADGES, BadgeKey, PAYPAL_EMAIL, newInvoiceId } from './useClub';
+import { ARTIFACT_URL, Club, JOIN_PRICE, PREVIEW_PAGES, BADGES, BadgeKey, PAYPAL_EMAIL, newInvoiceId } from './useClub';
 import { Book, pagesOf } from '../data/bookContent';
 
 interface BookClubProps {
@@ -266,7 +266,9 @@ export const BookClub: React.FC<BookClubProps> = ({ club, onReadBook }) => {
             <div className="font-display text-7xl font-bold text-gold-500">${JOIN_PRICE}</div>
             <p className="text-xl font-serif text-stone-500 italic leading-relaxed max-w-2xl mx-auto">One dollar, once. Read the club books free and join the book club. Prayers are $1 each and paid books are bought separately.</p>
 
-            {club.pending ? (
+            {!club.runtime ? (
+              <a href={ARTIFACT_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 bg-gold-500 text-black px-10 py-5 rounded-full font-bold uppercase tracking-[0.2em] text-xs">Join in the full app <ArrowTopRightOnSquareIcon className="w-5 h-5" /></a>
+            ) : club.pending ? (
               <div className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gold-500/10 border border-gold-500/40 text-gold-600 font-bold uppercase tracking-widest text-xs"><ClockIcon className="w-5 h-5" /> Request received. You will get access once the club confirms your $1.</div>
             ) : !club.uid ? (
               <p className="text-sm font-serif italic text-stone-500">Sign in to claude.ai to join the club.</p>
@@ -430,7 +432,9 @@ const BookDetail: React.FC<{ book: Book; club: Club; onClose: () => void; onRead
             </div>
           )}
           {!club.canRead(book.id) && club.accessOf(book.id) === 'paid' && (
-            club.pendingBook(book.id) ? (
+            !club.runtime ? (
+              <a href={ARTIFACT_URL} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-4 rounded-full bg-gold-500 text-black font-bold uppercase tracking-[0.15em] text-xs">Buy in the full app <ArrowTopRightOnSquareIcon className="w-4 h-4" /></a>
+            ) : club.pendingBook(book.id) ? (
               <div className="flex items-center gap-3 px-6 py-4 rounded-3xl bg-gold-500/10 border border-gold-500/40 text-gold-600 font-bold uppercase tracking-widest text-[10px]"><ClockIcon className="w-5 h-5" /> Purchase received. Access opens once the payment is confirmed.</div>
             ) : !club.uid ? (
               <p className="text-xs font-serif italic text-stone-500">Sign in to claude.ai to buy this book.</p>

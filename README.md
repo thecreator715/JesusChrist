@@ -26,7 +26,9 @@ npm run dev
 npm run typecheck
 npm run build:github      # set VITE_PDF_BASE=./books/ so PDFs load from /books
 ```
-CI (`.github/workflows/build.yml`) type-checks and builds on every push.
+CI (`.github/workflows/build.yml`) type-checks and builds on every push. `.github/workflows/pages.yml` deploys `dist` to GitHub Pages on every push to `main` (repo Settings > Pages > Source: GitHub Actions).
+
+On the Pages site the app runs in preview mode: library, reader and PDFs work, and payment buttons send people to the full app (`ARTIFACT_URL` in `components/useClub.ts`) so no payment is taken that the site cannot fulfil.
 
 ## Where it runs
 The app was built as a claude.ai artifact. There it gets its backend from the artifact runtime (`window.claude`):

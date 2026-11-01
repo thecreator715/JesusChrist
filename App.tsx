@@ -19,7 +19,7 @@ import { RitualAbuseAct } from './components/RitualAbuseAct';
 import { EarthAngel } from './components/EarthAngel';
 import { HighPriest } from './components/HighPriest';
 import { BookClub, BadgePill } from './components/BookClub';
-import { useClub, PREVIEW_PAGES } from './components/useClub';
+import { useClub, PREVIEW_PAGES, ARTIFACT_URL } from './components/useClub';
 import { PrayerPaywall } from './components/PrayerPaywall';
 
 import { 
@@ -47,6 +47,7 @@ const App: React.FC = () => {
   const [showArchive, setShowArchive] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [paying, setPaying] = useState(false);
+  const [showStatic, setShowStatic] = useState(false);
   const [genError, setGenError] = useState<string | null>(null);
   
   const [activeHz, setActiveHz] = useState<number | null>(null);
@@ -165,6 +166,7 @@ const App: React.FC = () => {
     if (e) e.preventDefault();
     if (!topic.trim()) return;
     setGenError(null);
+    if (!club.runtime) { setShowStatic(true); return; }
     if (!isFreePrayer && club.prayerCredits < 1) { setShowPaywall(true); return; }
     await runGenerate();
   };
@@ -291,6 +293,17 @@ const App: React.FC = () => {
         />
       )}
       
+      {showStatic && (
+        <div className="fixed inset-0 z-[110] bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center" onClick={() => setShowStatic(false)}>
+          <div className="w-full sm:max-w-md bg-white dark:bg-stone-900 rounded-t-[32px] sm:rounded-[32px] border border-gold-500/40 p-8 text-center space-y-5" style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom))' }} onClick={e => e.stopPropagation()}>
+            <SparklesIcon className="w-10 h-10 text-gold-500 mx-auto" />
+            <h3 className="font-display text-xl font-bold uppercase tracking-widest text-stone-900 dark:text-stone-100">Prayers live in the full app</h3>
+            <p className="font-serif italic text-stone-500 text-sm">This site shows the library and reader. To receive a prayer ($1 each), membership and full books, open the full app.</p>
+            <a href={ARTIFACT_URL} target="_blank" rel="noopener noreferrer" className="block w-full py-4 rounded-full bg-gold-500 text-black font-bold uppercase tracking-[0.2em] text-xs">Open the full app</a>
+            <button onClick={() => setShowStatic(false)} className="text-[10px] font-bold uppercase tracking-widest text-stone-400">Not now</button>
+          </div>
+        </div>
+      )}
       {showPaywall && <PrayerPaywall topic={topic} uid={club.uid} busy={paying} onClose={() => setShowPaywall(false)} onPaid={handlePrayerPaid} />}
 
       {/* Sidebar Overlay */}
@@ -342,6 +355,11 @@ const App: React.FC = () => {
           <button onClick={() => setActiveTab('builder')} className="p-2 text-gold-500"><SparklesIcon className="w-6 h-6" /></button>
         </header>
         
+        {!club.runtime && (
+          <div className="px-4 py-2.5 text-center text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-gold-700 dark:text-gold-400 bg-gold-500/10 border-b border-gold-500/30">
+            Preview site. <a href={ARTIFACT_URL} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">Open the full app</a> for prayers, membership and full books.
+          </div>
+        )}
         <div className="relative flex-1">
           {renderContent()}
         </div>
