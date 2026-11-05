@@ -349,7 +349,7 @@ export const HighPriest: React.FC = () => {
 
       {/* FINAL CTA */}
       <footer className="bg-stone-900 dark:bg-black p-16 rounded-[80px] border border-stone-800 text-center space-y-10 relative overflow-hidden">
-         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
+         <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(1.5px 1.5px at 20% 30%, #fde68a 50%, transparent 51%), radial-gradient(1px 1px at 70% 20%, #fff 50%, transparent 51%), radial-gradient(1px 1px at 55% 70%, #fde68a 50%, transparent 51%)', backgroundSize: '220px 220px' }}></div>
          <FingerPrintIcon className="w-16 h-16 text-purple-500 mx-auto" />
          <div className="max-w-3xl mx-auto space-y-6 relative z-10">
             <h3 className="font-display text-4xl md:text-5xl font-bold uppercase text-white tracking-tighter">You Are The New Priesthood</h3>

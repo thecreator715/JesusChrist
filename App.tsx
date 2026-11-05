@@ -21,15 +21,16 @@ import { HighPriest } from './components/HighPriest';
 import { BookClub, BadgePill } from './components/BookClub';
 import { useClub, PREVIEW_PAGES, ARTIFACT_URL } from './components/useClub';
 import { PrayerPaywall } from './components/PrayerPaywall';
+import { Speaker } from './components/Speaker';
 
 import { 
   BookOpenIcon, SparklesIcon, XMarkIcon, SunIcon, MoonIcon, HomeIcon, 
   UserIcon, GlobeAltIcon, DocumentTextIcon, Bars3Icon, BoltIcon, 
   AcademicCapIcon, ChatBubbleBottomCenterIcon, HeartIcon, ShieldCheckIcon,
-  StarIcon, MusicalNoteIcon, UserGroupIcon, ScaleIcon
+  StarIcon, MusicalNoteIcon, UserGroupIcon, ScaleIcon, MicrophoneIcon
 } from '@heroicons/react/24/outline';
 
-type Tab = 'home' | 'builder' | 'meditate' | 'atlantis-ai' | 'the-collective' | 'earth-angel' | 'high-priest' | 'about-jesus' | 'about-atlantis' | 'chakras' | 'bible-study' | 'donate' | 'exorcist' | 'bradley-act' | 'book-club';
+type Tab = 'home' | 'builder' | 'meditate' | 'atlantis-ai' | 'the-collective' | 'earth-angel' | 'high-priest' | 'about-jesus' | 'about-atlantis' | 'chakras' | 'bible-study' | 'donate' | 'exorcist' | 'bradley-act' | 'book-club' | 'speaker';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('home');
@@ -219,6 +220,7 @@ const App: React.FC = () => {
     { id: 'about-jesus', name: 'About Jesus', icon: UserIcon },
     { id: 'about-atlantis', name: 'About Atlantis', icon: GlobeAltIcon },
     { id: 'bible-study', name: 'Bible Study', icon: AcademicCapIcon },
+    { id: 'speaker', name: 'Book a Speaker', icon: MicrophoneIcon },
     { id: 'donate', name: 'Sacred Giving', icon: HeartIcon },
     { id: 'bradley-act', name: 'The Bradley Act', icon: ScaleIcon },
   ];
@@ -269,6 +271,8 @@ const App: React.FC = () => {
         return <AboutAtlantis onViewBook={() => handleOpenBook('christ-of-atlantis')} />;
       case 'bible-study':
         return <BibleStudy />;
+      case 'speaker':
+        return <Speaker />;
       case 'donate':
         return <Donate />;
       case 'bradley-act':
