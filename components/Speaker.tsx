@@ -61,6 +61,21 @@ const SESSION = [
   { n: '06', t: 'Break It Down', d: 'Together, with God my Father, we break the wall down fully and find your next level.' },
 ];
 
+const FUEL = [
+  { id: 'Purpose', line: 'When you know why you are here, no wall is big enough to stop you. Purpose turns pain into a mission and a bad chapter into the reason you were built.', ask: 'What would you do with your life if you knew it mattered?' },
+  { id: 'Faith', line: 'There is a strength that does not come from you. With God my Father I made it through what should have broken me, and that same strength is there for you.', ask: 'What do you believe is bigger than what you are facing?' },
+  { id: 'Proof', line: 'Prove it to yourself. Every time someone said I was finished, that became the proof I needed. You do not owe anyone an explanation. You owe yourself the result.', ask: 'Who do you need to prove wrong, starting with the voice in your own head?' },
+  { id: 'Legacy', line: 'Someone is watching how you handle the hard part. Your children, your team, your students. What you do next shows them what is possible.', ask: 'What do you want the people behind you to learn from how you rose?' },
+  { id: 'Freedom', line: 'Freedom is what they tried to take, and it is worth everything. Financial, mental, spiritual. Decide which freedom you are chasing and go get it.', ask: 'What does your life look like the day you are truly free?' },
+];
+
+const COACH_STEPS = [
+  { n: 'Session 1', t: 'Map & Name the Wall', d: 'One full hour. We look at where you are, name exactly what is holding you back and set your goal for the month.' },
+  { n: 'In Between', t: 'Take Action', d: 'You work the plan we build together. Real steps, using the systems and knowledge I provide, to get moving.' },
+  { n: 'Session 2', t: 'Break Through', d: 'One full hour. We review what moved, break down what is still stuck and set your next level. Extra time is common.' },
+];
+const COACH_TRACKS = ['Business growth', 'Leadership', 'Speaking to students', 'Life reset', 'Wellness & mindset', 'Faith-guided purpose'];
+
 const WALLS = [
   { id: 'Business', icon: BanknotesIcon, prompts: ['Revenue, growth or a business that stopped moving', 'Leadership, team and decision-making problems', 'Fear of the next big step', 'Rebuilding after a loss or a betrayal'] },
   { id: 'Life', icon: HeartIcon, prompts: ['Relationships, family and trust', 'Purpose: knowing what you were put here to do', 'Starting over after something was taken', 'Finding your voice and using it'] },
@@ -119,6 +134,7 @@ export const Speaker: React.FC = () => {
   const [faqOpen, setFaqOpen] = useState<number | null>(0);
   const [wall, setWall] = useState(0);
   const [extra, setExtra] = useState(false);
+  const [fuel, setFuel] = useState(0);
   const [showBar, setShowBar] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
@@ -349,6 +365,33 @@ export const Speaker: React.FC = () => {
         </Reveal>
       </section>
 
+      {/* FUEL */}
+      <section className="px-5 md:px-12 max-w-4xl mx-auto mt-16 md:mt-28">
+        <Eyebrow kicker="Your Fuel" title="What Pushes You Past Your Limit?" sub="There is a point you never thought you could reach. Find what gets you there." />
+        <Reveal>
+          <div className="flex gap-2 overflow-x-auto pb-3 -mx-5 px-5 md:mx-0 md:px-0 md:justify-center" style={{ scrollbarWidth: 'none' }}>
+            {FUEL.map((f, i) => (
+              <button key={f.id} onClick={() => setFuel(i)} className={`shrink-0 px-5 py-3 rounded-full font-sans font-bold uppercase text-[10px] tracking-[0.2em] border transition ${fuel === i ? 'text-stone-950 border-transparent shadow-lg' : 'border-stone-300 dark:border-stone-700 text-stone-500'}`} style={fuel === i ? goldBtn : undefined}>{f.id}</button>
+            ))}
+          </div>
+          <div key={fuel} className="animate-fade-in relative overflow-hidden mt-4 rounded-[32px] md:rounded-[44px] border border-gold-500/30 p-7 md:p-12 shadow-2xl" style={{ background: `linear-gradient(${150 + fuel * 18}deg,#3b2a0a 0%,#120d05 60%,#08070c 100%)` }}>
+            <div className="absolute -right-12 -top-12 w-56 h-56 rounded-full blur-3xl opacity-30" style={{ background: 'radial-gradient(circle,#f59e0b,transparent 70%)' }} />
+            <p className="relative font-display font-bold uppercase text-3xl md:text-5xl tracking-widest text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(180deg,#fff7d6,#f59e0b)' }}>{FUEL[fuel].id}</p>
+            <p className="relative font-serif text-[18px] md:text-2xl leading-relaxed text-stone-100 mt-4">{FUEL[fuel].line}</p>
+            <div className="relative mt-6 rounded-2xl bg-black/35 border border-gold-500/25 p-5">
+              <p className="font-sans font-bold uppercase text-[9px] tracking-[0.3em] text-gold-500">Ask yourself</p>
+              <p className="font-serif italic text-[18px] md:text-xl mt-2 leading-snug" style={{ color: '#fde68a' }}>{FUEL[fuel].ask}</p>
+            </div>
+            <div className="relative flex flex-col sm:flex-row gap-3 mt-6">
+              <button onClick={() => { setFormat('coaching'); goTo('book-speaker'); }} className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full font-sans font-bold uppercase text-[10px] tracking-[0.22em] text-stone-950 shadow-xl shadow-gold-500/30 active:scale-95 transition" style={goldBtn}>
+                <BoltIcon className="w-4 h-4" /> Work On This With Me
+              </button>
+              <button onClick={() => setFuel(f => (f + 1) % FUEL.length)} className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border border-gold-500/40 text-gold-300 font-sans font-bold uppercase text-[10px] tracking-[0.22em]">Next Fuel</button>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
       {/* TALK FORMATS */}
       <section className="px-5 md:px-12 max-w-5xl mx-auto mt-16 md:mt-28">
         <Eyebrow kicker="Talk Formats" title="Choose Your Experience" />
@@ -418,6 +461,26 @@ export const Speaker: React.FC = () => {
                 </button>
               </div>
             </div>
+          </div>
+        </Reveal>
+
+        <Reveal>
+          <div className="mt-8">
+            <p className="font-sans font-bold uppercase text-[9px] tracking-[0.35em] text-gold-500 text-center mb-5">How A Coaching Month Works</p>
+            <div className="grid md:grid-cols-3 gap-4">
+              {COACH_STEPS.map((c, i) => (
+                <div key={c.n} className="rounded-[26px] border border-gold-500/25 p-6" style={{ background: 'linear-gradient(145deg,#1d1409,#0b0910 75%)' }}>
+                  <span className="inline-block px-3 py-1 rounded-full bg-gold-500/10 border border-gold-500/30 font-sans font-bold uppercase text-[8px] tracking-[0.2em] text-gold-400">{c.n}</span>
+                  <h4 className="font-display font-bold uppercase text-lg tracking-widest text-gold-300 mt-3">{i + 1}. {c.t}</h4>
+                  <p className="font-serif text-[16px] leading-relaxed text-stone-300 mt-2">{c.d}</p>
+                </div>
+              ))}
+            </div>
+            <p className="font-sans font-bold uppercase text-[9px] tracking-[0.35em] text-gold-500 text-center mt-10 mb-4">Coaching Tracks</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {COACH_TRACKS.map(t => <span key={t} className="px-4 py-2.5 rounded-full border border-gold-500/30 bg-gold-500/5 font-serif text-[15px] text-stone-700 dark:text-stone-200">{t}</span>)}
+            </div>
+            <p className="text-center font-serif italic text-stone-500 dark:text-stone-400 mt-6 text-[15px]">Whether you are a business owner or a teacher with something to say to students, we build it around you. Price is flexible, just inquire.</p>
           </div>
         </Reveal>
       </section>
