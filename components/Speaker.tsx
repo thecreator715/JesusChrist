@@ -8,10 +8,11 @@ import {
 export const BOOKING_EMAIL = 'JESUSCHRISTOFATLANTIS@GMAIL.COM';
 export const FEE_DIGITAL = 5000;
 export const FEE_IN_PERSON = 10000;
+export const FEE_COACHING = 100;
 const money = (n: number) => '$' + n.toLocaleString('en-US');
 const goTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
-type Format = 'digital' | 'in-person';
+type Format = 'digital' | 'in-person' | 'coaching';
 
 const EVENT_TYPES = [
   'Conference / keynote', 'Survivor or advocacy event', 'Faith community / church',
@@ -29,7 +30,7 @@ const TIMELINE = [
   { icon: UserGroupIcon, tag: 'The Lie', title: 'A Family That Was Never Real', text: 'It began inside a fake family. People who played the part of love while holding a very different plan. The deepest betrayal is the one that wears a familiar face.' },
   { icon: ShieldCheckIcon, tag: 'The Sale', title: 'Taken and Sold', text: 'Kidnapped and trafficked by a secret society running human trafficking crimes. Sold by the people who were supposed to protect me. No one should ever have to hear that sentence about their own life.' },
   { icon: FireIcon, tag: 'The Fire', title: 'Dealing With It', text: 'How do you deal with it? Not all at once. One hour, one breath, one refusal to give up at a time. This is the raw middle of the story, and the part that teaches the most.' },
-  { icon: BanknotesIcon, tag: 'The Attacks', title: 'Attacked and Robbed', text: 'The attacks came from them, and kept coming after I got out. Millions were stolen. They wanted me broken, silent and poor. They got none of the three.' },
+  { icon: BanknotesIcon, tag: 'The Attacks', title: 'Attacked and Robbed', text: 'My family robbed me of my identity and stole millions, claiming I was dead so they could take it. That identity theft is an ongoing situation, and I am still fighting it. They wanted me broken, silent and poor. They got none of the three.' },
   { icon: BoltIcon, tag: 'The Forge', title: 'Made Stronger', text: 'What does not kill you truly makes you stronger. I am living proof. Every attempt to crush me became part of the strength I stand on today.' },
   { icon: SparklesIcon, tag: 'The Rise', title: 'Risen, and Giving Back', text: 'I survived, I thrived, and now I turn that pain into purpose: speaking so others know they can rise, and funding food for people who need it.' },
 ];
@@ -37,6 +38,7 @@ const TIMELINE = [
 const FORGE = [
   { took: 'My family', forged: 'A chosen family and a fierce sense of who I am. Blood did not define me; courage did.' },
   { took: 'My freedom', forged: 'A freedom I will never take for granted, and the drive to help others find theirs.' },
+  { took: 'My identity', forged: 'An identity no one can forge or steal, because it lives in who I am, not in paperwork.' },
   { took: 'My money', forged: 'The knowledge that wealth is built, not given, and that I can build it again.' },
   { took: 'My peace', forged: 'Peace I made myself, through faith and discipline, that no one can take twice.' },
   { took: 'My voice', forged: 'A voice that now fills stages and tells the truth they tried to bury.' },
@@ -53,7 +55,9 @@ const TAKEAWAYS = [
 const FAQ = [
   { q: 'How do I book?', a: 'Fill out the inquiry form below. It opens your email app with everything filled in, addressed to JESUSCHRISTOFATLANTIS@GMAIL.COM. Availability and final details are confirmed by email.' },
   { q: 'What are the fees?', a: 'Digital engagements are $5,000 and in-person engagements are $10,000.' },
-  { q: 'Where does the money go?', a: 'Booking proceeds go toward speaking fees and donations to UNIONCOIN, a charity that feeds individuals through a digital trust fund. Exact allocation is confirmed by email.' },
+  { q: 'We are a small group or a smaller event. Is there flexibility?', a: 'Yes. The listed fees are for conferences and larger events. For smaller groups, classrooms and individuals, pricing is flexible. Send an inquiry and we will work something out.' },
+  { q: 'How does coaching work?', a: 'Coaching is $100 a month and includes two one-hour sessions to work on your goals and find where you can improve, using the systems and knowledge I provide. It suits business owners, teachers, leaders and individuals. Pricing can be adjusted, so just inquire.' },
+  { q: 'Where does the money go?', a: 'Speaking booking proceeds go toward speaking fees and donations to UNIONCOIN, a charity that feeds individuals through a digital trust fund. Exact allocation is confirmed by email.' },
   { q: 'Is the content safe for my audience?', a: 'The story is told from a survivor\'s perspective and covers kidnapping, human trafficking, betrayal and violence. It is about survival and strength, not graphic detail. Please plan with your audience in mind, and mention any guidelines in your inquiry.' },
   { q: 'Can the talk be customized?', a: 'Yes. Choose a format in the form (keynote, fireside, workshop or leadership talk) and tell me about your audience and goals.' },
 ];
@@ -111,29 +115,31 @@ export const Speaker: React.FC = () => {
     return () => { a.disconnect(); b.disconnect(); };
   }, []);
 
-  const fee = format === 'digital' ? FEE_DIGITAL : FEE_IN_PERSON;
+  const fee = format === 'digital' ? FEE_DIGITAL : format === 'in-person' ? FEE_IN_PERSON : FEE_COACHING;
+  const coaching = format === 'coaching';
+  const feeLabel = coaching ? `${money(fee)}/mo` : money(fee);
   const emailOk = /^\S+@\S+\.\S+$/.test(email.trim());
   const valid = name.trim().length > 1 && emailOk;
 
-  const subject = `Speaking Booking Inquiry: ${org.trim() || name.trim() || 'New inquiry'} (${format === 'digital' ? 'Digital' : 'In person'})`;
+  const subject = coaching ? `Coaching Inquiry: ${name.trim() || 'New inquiry'}` : `Speaking Booking Inquiry: ${org.trim() || name.trim() || 'New inquiry'} (${format === 'digital' ? 'Digital' : 'In person'})`;
   const body = useMemo(() => ([
     'Hello,', '',
-    'I would like to inquire about booking you as a speaker.', '',
+    coaching ? 'I would like to inquire about your coaching ($100/month, two 1-hour sessions).' : 'I would like to inquire about booking you as a speaker.', '',
     `Name: ${name.trim()}`,
     `Email: ${email.trim()}`,
     phone.trim() ? `Phone: ${phone.trim()}` : null,
     org.trim() ? `Organization: ${org.trim()}` : null,
     `Event type: ${eventType}`,
-    `Talk: ${talk}`,
-    `Format: ${format === 'digital' ? 'Digital' : 'In person'} (listed fee ${money(fee)})`,
+    coaching ? 'Interested in: 1-on-1 or small-group coaching' : `Talk: ${talk}`,
+    coaching ? `Plan: Coaching, ${feeLabel} (open to adjusting price)` : `Format: ${format === 'digital' ? 'Digital' : 'In person'} (listed fee ${money(fee)})`,
     date.trim() ? `Event date: ${date.trim()}` : null,
     location.trim() ? `Location: ${location.trim()}` : null,
     audience.trim() ? `Expected audience: ${audience.trim()}` : null,
     '',
-    message.trim() ? 'About our event:\n' + message.trim() : '',
+    message.trim() ? (coaching ? 'My goals:\n' : 'About our event:\n') + message.trim() : '',
     '', 'Thank you,', name.trim(),
   ] as (string | null)[]).filter((v): v is string => v !== null).join('\n'),
-  [name, email, phone, org, eventType, talk, format, fee, date, location, audience, message]);
+  [name, email, phone, org, eventType, talk, format, fee, coaching, feeLabel, date, location, audience, message]);
 
   const mailto = `mailto:${BOOKING_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   const onSend = (e: React.MouseEvent<HTMLAnchorElement>) => { if (!valid) { e.preventDefault(); setTried(true); } };
@@ -177,6 +183,7 @@ export const Speaker: React.FC = () => {
             {[['Digital', money(FEE_DIGITAL)], ['In Person', money(FEE_IN_PERSON)]].map(([t, p]) => (
               <span key={t} className="px-4 py-2 rounded-full bg-black/40 border border-gold-500/25 font-sans font-bold uppercase text-[9px] tracking-[0.2em] text-gold-300">{t} · {p}</span>
             ))}
+            <span className="px-4 py-2 rounded-full bg-black/40 border border-gold-500/25 font-sans font-bold uppercase text-[9px] tracking-[0.2em] text-gold-300">Coaching · $100/mo</span>
             <span className="px-4 py-2 rounded-full bg-black/40 border border-gold-500/25 font-sans font-bold uppercase text-[9px] tracking-[0.2em] text-gold-300">Funds UNIONCOIN</span>
           </div>
         </div>
@@ -309,14 +316,45 @@ export const Speaker: React.FC = () => {
         </div>
       </section>
 
+      <p className="text-center font-serif italic text-stone-500 dark:text-stone-400 mt-5 text-[15px] px-5">Smaller group or event? Pricing is flexible. See coaching and small-group options below.</p>
+
+      {/* SMALLER EVENTS + COACHING */}
+      <section id="coaching" className="px-5 md:px-12 max-w-4xl mx-auto mt-16 md:mt-28 scroll-mt-20">
+        <Eyebrow kicker="Not a Conference?" title="Small Group or Individual" sub="Don’t let the big numbers scare you. Smaller groups and events get flexible pricing. Just inquire." />
+        <Reveal>
+          <div className="relative overflow-hidden rounded-[32px] md:rounded-[44px] border border-gold-500/40 p-6 md:p-12 shadow-2xl" style={{ background: 'linear-gradient(150deg,#3b2a0a 0%,#150f08 55%,#0b0910 100%)' }}>
+            <div className="absolute -left-10 -bottom-10 w-56 h-56 rounded-full blur-3xl opacity-25" style={{ background: 'radial-gradient(circle,#f59e0b,transparent 70%)' }} />
+            <div className="relative grid md:grid-cols-5 gap-8 items-center">
+              <div className="md:col-span-2 text-center md:text-left">
+                <p className="font-sans font-bold uppercase text-[10px] tracking-[0.3em] text-gold-500/80">1-on-1 Coaching</p>
+                <p className="font-display font-bold text-6xl md:text-7xl text-transparent bg-clip-text mt-2" style={{ backgroundImage: 'linear-gradient(180deg,#fff7d6,#f59e0b)' }}>$100</p>
+                <p className="font-sans font-bold uppercase text-[10px] tracking-[0.25em] text-gold-300 mt-1">per month</p>
+                <p className="font-serif italic text-stone-300 mt-3 text-[16px]">2 sessions · 1 hour each</p>
+              </div>
+              <div className="md:col-span-3 space-y-4">
+                <p className="font-serif text-[17px] md:text-xl leading-relaxed text-stone-200">True coaching and motivation, one on one. Two full one-hour sessions every month to work on your goals and find where you can improve, using the systems and knowledge I provide.</p>
+                <ul className="space-y-2.5">
+                  {['Business owners and professionals sharpening their goals', 'Teachers and leaders preparing to speak to students or teams', 'Individuals who want real accountability and a way through hard times', 'Small groups welcome. Pricing is flexible, just ask'].map(t => (
+                    <li key={t} className="flex gap-3 items-start"><CheckIcon className="w-5 h-5 text-gold-400 mt-0.5" style={{ minWidth: 20 }} /><span className="font-serif text-[16px] md:text-lg text-stone-300 leading-snug">{t}</span></li>
+                  ))}
+                </ul>
+                <button onClick={() => { setFormat('coaching'); goTo('book-speaker'); }} className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-sans font-bold uppercase text-[10px] tracking-[0.25em] text-stone-950 shadow-2xl shadow-gold-500/30 active:scale-95 transition" style={goldBtn}>
+                  <EnvelopeIcon className="w-4 h-4" /> Inquire About Coaching
+                </button>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
       {/* IMPACT */}
       <section className="px-5 md:px-12 max-w-5xl mx-auto mt-16 md:mt-28">
-        <Eyebrow kicker="Your Booking Does More" title="Fees That Feed People" sub="Proceeds go toward speaking fees and donations to UNIONCOIN, a charity feeding individuals through a digital trust fund." />
+        <Eyebrow kicker="Your Booking Does More" title="Fees That Feed People" sub="Speaking booking proceeds go toward speaking fees and donations to UNIONCOIN, a charity feeding individuals through a digital trust fund." />
         <Reveal>
           <div className="rounded-[32px] md:rounded-[44px] border border-gold-500/30 p-6 md:p-12 shadow-2xl" style={{ background: 'linear-gradient(150deg,#2a1d0a 0%,#0c0a12 65%)' }}>
             <div className="flex flex-col md:flex-row items-stretch gap-3 md:gap-4">
               {[
-                { icon: MicrophoneIcon, t: 'Your Booking', d: 'You book a talk. Digital $5,000 or in person $10,000.' },
+                { icon: MicrophoneIcon, t: 'Your Booking', d: 'You book a speaking engagement. Digital $5,000 or in person $10,000.' },
                 { icon: BanknotesIcon, t: 'Fees & Donations', d: 'Funds cover speaking fees and donations to UNIONCOIN.' },
                 { icon: GlobeAltIcon, t: 'Digital Trust Fund', d: 'UNIONCOIN holds donations in a digital trust fund.' },
                 { icon: HeartIcon, t: 'Individuals Fed', d: 'The fund goes to feeding individuals in need.' },
@@ -360,24 +398,25 @@ export const Speaker: React.FC = () => {
           <div className="text-center space-y-3 mb-8">
             <EnvelopeIcon className="w-9 h-9 text-gold-400 mx-auto" />
             <h2 className="font-display font-bold uppercase text-2xl md:text-4xl tracking-widest text-gold-300">Booking Inquiry</h2>
-            <p className="font-serif text-stone-300 text-[16px] md:text-lg">Tell me about your event. Pressing send opens your email app with everything filled in, addressed to {BOOKING_EMAIL.toLowerCase()}.</p>
+            <p className="font-serif text-stone-300 text-[16px] md:text-lg">Tell me about your event or goals. Pressing send opens your email app with everything filled in, addressed to {BOOKING_EMAIL.toLowerCase()}.</p>
           </div>
           <div className="space-y-5">
-            <div className="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-black/40 border border-white/10">
-              {([['digital', 'Digital', FEE_DIGITAL], ['in-person', 'In Person', FEE_IN_PERSON]] as [Format, string, number][]).map(([f, t, p]) => (
+            <div className="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-black/40 border border-white/10">
+              {([['digital', 'Digital', '$5,000'], ['in-person', 'In Person', '$10,000'], ['coaching', 'Coaching', '$100/mo']] as [Format, string, string][]).map(([f, t, p]) => (
                 <button key={f} type="button" onClick={() => setFormat(f)}
-                  className={`py-3 rounded-xl font-sans font-bold uppercase text-[10px] tracking-[0.2em] transition ${format === f ? 'text-stone-950 shadow-lg' : 'text-stone-400'}`}
+                  className={`py-3 px-1 rounded-xl font-sans font-bold uppercase text-[9px] tracking-[0.12em] leading-tight transition ${format === f ? 'text-stone-950 shadow-lg' : 'text-stone-400'}`}
                   style={format === f ? { background: 'linear-gradient(135deg,#fde68a,#f59e0b)' } : undefined}>
-                  {t} · {money(p)}
+                  {t}<br /><span className="opacity-80">{p}</span>
                 </button>
               ))}
             </div>
-            <div>
+            {!coaching && <div>
               <label className={label}>Talk format</label>
               <select className={input} value={talk} onChange={e => setTalk(e.target.value)}>
                 {TALKS.map(t => <option key={t.id} value={t.id} className="text-black">{t.id} ({t.len})</option>)}
               </select>
-            </div>
+            </div>}
+            {coaching && <p className="font-serif italic text-gold-200 text-[15px] leading-relaxed rounded-2xl border border-gold-500/25 bg-gold-500/5 p-4" style={{ color: '#fde68a' }}>Coaching is $100 a month for two 1-hour sessions. Price is flexible for individuals and small groups, so tell me what works for you.</p>}
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
                 <label className={label}>Your name *</label>
@@ -397,32 +436,32 @@ export const Speaker: React.FC = () => {
                 <label className={label}>Phone</label>
                 <input className={input} type="tel" inputMode="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Optional" autoComplete="tel" />
               </div>
-              <div>
+              {!coaching && <div>
                 <label className={label}>Event type</label>
                 <select className={input} value={eventType} onChange={e => setEventType(e.target.value)}>
                   {EVENT_TYPES.map(t => <option key={t} value={t} className="text-black">{t}</option>)}
                 </select>
+              </div>}
+              <div>
+                <label className={label}>{coaching ? 'Preferred start' : 'Event date'}</label>
+                <input className={input} value={date} onChange={e => setDate(e.target.value)} placeholder={coaching ? 'e.g. January' : 'e.g. March 14, 2027'} />
               </div>
               <div>
-                <label className={label}>Event date</label>
-                <input className={input} value={date} onChange={e => setDate(e.target.value)} placeholder="e.g. March 14, 2027" />
+                <label className={label}>{coaching ? 'Time zone' : format === 'digital' ? 'Platform / time zone' : 'City & venue'}</label>
+                <input className={input} value={location} onChange={e => setLocation(e.target.value)} placeholder={coaching ? 'e.g. PST' : format === 'digital' ? 'Zoom, Teams… / PST' : 'City, State, venue'} />
               </div>
               <div>
-                <label className={label}>{format === 'digital' ? 'Platform / time zone' : 'City & venue'}</label>
-                <input className={input} value={location} onChange={e => setLocation(e.target.value)} placeholder={format === 'digital' ? 'Zoom, Teams… / PST' : 'City, State, venue'} />
-              </div>
-              <div>
-                <label className={label}>Expected audience</label>
-                <input className={input} inputMode="numeric" value={audience} onChange={e => setAudience(e.target.value)} placeholder="e.g. 500" />
+                <label className={label}>{coaching ? 'People (1 or a group)' : 'Expected audience'}</label>
+                <input className={input} inputMode="numeric" value={audience} onChange={e => setAudience(e.target.value)} placeholder={coaching ? 'e.g. 1' : 'e.g. 500'} />
               </div>
             </div>
             <div>
-              <label className={label}>About your event</label>
-              <textarea className={input + ' min-h-[130px] resize-y'} value={message} onChange={e => setMessage(e.target.value)} placeholder="Theme, audience, what you hope people take away…" />
+              <label className={label}>{coaching ? 'Your goals' : 'About your event'}</label>
+              <textarea className={input + ' min-h-[130px] resize-y'} value={message} onChange={e => setMessage(e.target.value)} placeholder={coaching ? 'What do you want to work on? Business, speaking to students, life…' : 'Theme, audience, what you hope people take away…'} />
             </div>
             <a href={valid ? mailto : '#book-speaker'} onClick={onSend}
               className="flex items-center justify-center gap-3 w-full py-5 rounded-full font-sans font-bold uppercase text-[11px] tracking-[0.25em] text-stone-950 shadow-2xl shadow-gold-500/30 active:scale-[0.98] transition" style={goldBtn}>
-              <EnvelopeIcon className="w-5 h-5" /> Open Email &amp; Send Inquiry · {money(fee)}
+              <EnvelopeIcon className="w-5 h-5" /> Open Email &amp; Send Inquiry · {feeLabel}
             </a>
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-center">
               <button type="button" onClick={copyDetails} className="inline-flex items-center gap-2 text-gold-400 font-sans font-bold uppercase text-[9px] tracking-[0.25em] py-2">
@@ -442,7 +481,7 @@ export const Speaker: React.FC = () => {
       {showBar && (
         <div className="fixed left-0 right-0 bottom-0 z-30 md:hidden pl-4 pr-24 pt-3 animate-fade-in" style={{ paddingBottom: 'max(0.9rem, env(safe-area-inset-bottom))', background: 'linear-gradient(180deg, transparent, rgba(7,6,10,0.95) 35%)' }}>
           <button onClick={() => goTo('book-speaker')} className="w-full py-4 rounded-full font-sans font-bold uppercase text-[10px] tracking-[0.2em] text-stone-950 shadow-2xl shadow-gold-500/30" style={goldBtn}>
-            Book the Talk · from {money(FEE_DIGITAL)}
+            Inquire · Talks &amp; Coaching
           </button>
         </div>
       )}
