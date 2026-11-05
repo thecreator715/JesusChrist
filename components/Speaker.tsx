@@ -68,6 +68,7 @@ const WALLS = [
 ];
 
 const FAQ = [
+  { q: 'What if our time slot is only an hour?', a: 'An hour is fine, and I am happy to stay longer. If nothing is scheduled after my session and it is okay to go longer, I usually extend the time, even when only an hour is booked. Tell me in your inquiry if your schedule has room.' },
   { q: 'Is this a traditional speech?', a: 'No. My delivery is not traditional. It is personal, raw and interactive, built around your room, and guided by faith, along with God my Father. You hear the story, ask your questions, then we work on what is holding your people back.' },
   { q: 'How do I book?', a: 'Fill out the inquiry form below. It opens your email app with everything filled in, addressed to JESUSCHRISTOFATLANTIS@GMAIL.COM. Availability and final details are confirmed by email.' },
   { q: 'What are the fees?', a: 'Digital engagements are $5,000 and in-person engagements are $10,000.' },
@@ -117,6 +118,7 @@ export const Speaker: React.FC = () => {
   const [flipped, setFlipped] = useState<Record<number, boolean>>({});
   const [faqOpen, setFaqOpen] = useState<number | null>(0);
   const [wall, setWall] = useState(0);
+  const [extra, setExtra] = useState(false);
   const [showBar, setShowBar] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
@@ -152,11 +154,12 @@ export const Speaker: React.FC = () => {
     date.trim() ? `Event date: ${date.trim()}` : null,
     location.trim() ? `Location: ${location.trim()}` : null,
     audience.trim() ? `Expected audience: ${audience.trim()}` : null,
+    extra ? 'Schedule: nothing is booked after, so extra time is welcome if the session runs long.' : null,
     '',
     message.trim() ? (coaching ? 'My goals:\n' : 'About our event:\n') + message.trim() : '',
     '', 'Thank you,', name.trim(),
   ] as (string | null)[]).filter((v): v is string => v !== null).join('\n'),
-  [name, email, phone, org, eventType, talk, format, fee, coaching, feeLabel, date, location, audience, message]);
+  [name, email, phone, org, eventType, talk, format, fee, coaching, feeLabel, date, location, audience, extra, message]);
 
   const mailto = `mailto:${BOOKING_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   const onSend = (e: React.MouseEvent<HTMLAnchorElement>) => { if (!valid) { e.preventDefault(); setTried(true); } };
@@ -310,6 +313,13 @@ export const Speaker: React.FC = () => {
             ))}
           </div>
         </div>
+
+        <Reveal>
+          <div className="mt-10 rounded-[28px] border border-gold-500/30 p-6 text-center" style={{ background: 'linear-gradient(145deg, rgba(251,191,36,0.14), rgba(0,0,0,0.4))' }}>
+            <p className="font-sans font-bold uppercase text-[9px] tracking-[0.3em] text-gold-500">Time</p>
+            <p className="font-serif italic text-xl md:text-2xl text-stone-100 mt-2 leading-snug">Booked for an hour? If nothing is scheduled after and it is okay to go longer, I usually extend the time.</p>
+          </div>
+        </Reveal>
 
         <Reveal>
           <div className="mt-14 rounded-[32px] md:rounded-[44px] border border-gold-500/30 p-6 md:p-12 shadow-2xl" style={{ background: 'linear-gradient(150deg,#2a1d0a 0%,#0c0a12 70%)' }}>
@@ -524,6 +534,10 @@ export const Speaker: React.FC = () => {
               <label className={label}>{coaching ? 'Your goals' : 'About your event'}</label>
               <textarea className={input + ' min-h-[130px] resize-y'} value={message} onChange={e => setMessage(e.target.value)} placeholder={coaching ? 'What do you want to work on? Business, speaking to students, life…' : 'Theme, audience, what you hope people take away…'} />
             </div>
+            <label className="flex items-start gap-3 rounded-2xl border border-gold-500/25 bg-gold-500/5 p-4 cursor-pointer">
+              <input type="checkbox" checked={extra} onChange={e => setExtra(e.target.checked)} className="mt-1 w-5 h-5 accent-amber-500" style={{ minWidth: 20 }} />
+              <span className="font-serif text-[16px] leading-snug" style={{ color: '#fde68a' }}>Our schedule is open after this session, so going longer is welcome. I usually extend the time, even when only an hour is booked.</span>
+            </label>
             <a href={valid ? mailto : '#book-speaker'} onClick={onSend}
               className="flex items-center justify-center gap-3 w-full py-5 rounded-full font-sans font-bold uppercase text-[11px] tracking-[0.25em] text-stone-950 shadow-2xl shadow-gold-500/30 active:scale-[0.98] transition" style={goldBtn}>
               <EnvelopeIcon className="w-5 h-5" /> Open Email &amp; Send Inquiry · {feeLabel}
