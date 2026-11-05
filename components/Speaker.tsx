@@ -52,7 +52,23 @@ const TAKEAWAYS = [
   'Rising above attacks, loss and being counted out',
 ];
 
+const SESSION = [
+  { n: '01', t: 'Introduction', d: 'Who I am and why I am standing in front of you.' },
+  { n: '02', t: 'Origin Story', d: 'Where it began: the fake family, the betrayal, being sold.' },
+  { n: '03', t: 'Survival Story', d: 'How I got through it, was attacked, lost millions, and rose.' },
+  { n: '04', t: 'Your Questions', d: 'The room asks. Anything you want to know, I answer honestly.' },
+  { n: '05', t: 'The Wall', d: 'Now it turns to you. What is bothering you? Where are you stuck?' },
+  { n: '06', t: 'Break It Down', d: 'Together, with God my Father, we break the wall down fully and find your next level.' },
+];
+
+const WALLS = [
+  { id: 'Business', icon: BanknotesIcon, prompts: ['Revenue, growth or a business that stopped moving', 'Leadership, team and decision-making problems', 'Fear of the next big step', 'Rebuilding after a loss or a betrayal'] },
+  { id: 'Life', icon: HeartIcon, prompts: ['Relationships, family and trust', 'Purpose: knowing what you were put here to do', 'Starting over after something was taken', 'Finding your voice and using it'] },
+  { id: 'Wellness', icon: BoltIcon, prompts: ['Mental and emotional weight you carry', 'Energy, habits and discipline', 'Healing from trauma and finding peace', 'Faith and spiritual strength'] },
+];
+
 const FAQ = [
+  { q: 'Is this a traditional speech?', a: 'No. My delivery is not traditional. It is personal, raw and interactive, built around your room, and guided by faith, along with God my Father. You hear the story, ask your questions, then we work on what is holding your people back.' },
   { q: 'How do I book?', a: 'Fill out the inquiry form below. It opens your email app with everything filled in, addressed to JESUSCHRISTOFATLANTIS@GMAIL.COM. Availability and final details are confirmed by email.' },
   { q: 'What are the fees?', a: 'Digital engagements are $5,000 and in-person engagements are $10,000.' },
   { q: 'We are a small group or a smaller event. Is there flexibility?', a: 'Yes. The listed fees are for conferences and larger events. For smaller groups, classrooms and individuals, pricing is flexible. Send an inquiry and we will work something out.' },
@@ -100,6 +116,7 @@ export const Speaker: React.FC = () => {
   const [step, setStep] = useState(0);
   const [flipped, setFlipped] = useState<Record<number, boolean>>({});
   const [faqOpen, setFaqOpen] = useState<number | null>(0);
+  const [wall, setWall] = useState(0);
   const [showBar, setShowBar] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
@@ -270,6 +287,54 @@ export const Speaker: React.FC = () => {
                 </li>
               ))}
             </ul>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* HOW THE SESSION RUNS */}
+      <section className="px-5 md:px-12 max-w-5xl mx-auto mt-16 md:mt-28">
+        <Eyebrow kicker="How It Runs" title="Not a Traditional Talk" sub="From my story to your breakthrough. Guided by faith, along with God my Father." />
+        <div className="relative">
+          <div className="absolute left-[27px] md:left-1/2 top-4 bottom-4 w-px md:-translate-x-1/2" style={{ background: 'linear-gradient(180deg,transparent,#f59e0b 12%,#f59e0b 88%,transparent)', opacity: 0.45 }} />
+          <div className="space-y-5 md:space-y-8">
+            {SESSION.map((st, i) => (
+              <Reveal key={st.n} delay={60}>
+                <div className={`relative flex items-start gap-4 md:gap-0 md:w-1/2 ${i % 2 ? 'md:ml-auto md:pl-12' : 'md:pr-12 md:flex-row-reverse md:text-right'}`}>
+                  <div className={`shrink-0 rounded-full flex items-center justify-center font-display font-bold text-stone-950 z-10 md:absolute md:top-0 ${i % 2 ? 'md:-left-7' : 'md:-right-7'}`} style={{ width: 56, height: 56, background: i >= 4 ? 'linear-gradient(135deg,#fff7d6,#f59e0b)' : 'linear-gradient(135deg,#fde68a,#b45309)', boxShadow: i >= 4 ? '0 0 30px rgba(245,158,11,0.5)' : 'none' }}>{st.n}</div>
+                  <div className="flex-1 min-w-0 rounded-[24px] border border-gold-500/20 p-5 md:p-6" style={{ background: i >= 4 ? 'linear-gradient(145deg,#3b2a0a,#120d05 75%)' : 'linear-gradient(145deg,#1b1409,#0b0910 75%)' }}>
+                    <h3 className="font-display font-bold uppercase text-lg tracking-widest text-gold-300">{st.t}</h3>
+                    <p className="font-serif text-[16px] md:text-lg leading-relaxed text-stone-300 mt-1.5">{st.d}</p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+
+        <Reveal>
+          <div className="mt-14 rounded-[32px] md:rounded-[44px] border border-gold-500/30 p-6 md:p-12 shadow-2xl" style={{ background: 'linear-gradient(150deg,#2a1d0a 0%,#0c0a12 70%)' }}>
+            <p className="font-sans font-bold uppercase text-[9px] tracking-[0.35em] text-gold-500 text-center">For The Crowd</p>
+            <h3 className="font-display font-bold uppercase text-2xl md:text-4xl tracking-widest text-gold-300 text-center mt-2">Where Is Your Wall?</h3>
+            <p className="font-serif italic text-stone-300 text-center text-[16px] md:text-xl mt-3 max-w-2xl mx-auto">Most people hit a wall. I am ready to help you break it down fully. Pick where you feel stuck.</p>
+            <div className="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-black/40 border border-white/10 mt-6 max-w-lg mx-auto">
+              {WALLS.map((w, i) => (
+                <button key={w.id} onClick={() => setWall(i)} className={`py-3 rounded-xl font-sans font-bold uppercase text-[10px] tracking-[0.15em] transition ${wall === i ? 'text-stone-950 shadow-lg' : 'text-stone-400'}`} style={wall === i ? { background: 'linear-gradient(135deg,#fde68a,#f59e0b)' } : undefined}>{w.id}</button>
+              ))}
+            </div>
+            <ul key={wall} className="animate-fade-in grid sm:grid-cols-2 gap-3 mt-6">
+              {WALLS[wall].prompts.map(t => (
+                <li key={t} className="flex gap-3 items-start rounded-2xl bg-black/30 border border-white/10 p-4">
+                  <CheckIcon className="w-5 h-5 text-gold-400 mt-0.5" style={{ minWidth: 20 }} />
+                  <span className="font-serif text-[16px] md:text-lg text-stone-200 leading-snug">{t}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="text-center font-serif italic text-gold-200 mt-6 text-[16px]" style={{ color: '#fde68a' }}>Whatever the wall is, we break it down, and name your next level.</p>
+            <div className="text-center mt-6">
+              <button onClick={() => goTo('book-speaker')} className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-sans font-bold uppercase text-[10px] tracking-[0.25em] text-stone-950 shadow-2xl shadow-gold-500/30 active:scale-95 transition" style={goldBtn}>
+                <EnvelopeIcon className="w-4 h-4" /> Bring This To My Event
+              </button>
+            </div>
           </div>
         </Reveal>
       </section>
