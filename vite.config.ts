@@ -4,5 +4,5 @@ import { viteSingleFile } from 'vite-plugin-singlefile';
 
 export default defineConfig({
   plugins: [react(), viteSingleFile()],
-  build: { target: 'es2020', chunkSizeWarningLimit: 5000 },
+  build: { target: 'es2020', chunkSizeWarningLimit: 5000, rollupOptions: { input: 'app.html' } },
 });

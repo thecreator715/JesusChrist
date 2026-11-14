@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "build:github": "vite build",
+    "dev": "vite --open /app.html",
+    "build": "vite build && node scripts/finalize.mjs",
+    "build:github": "vite build && node scripts/finalize.mjs",
+    "build:pages": "VITE_PDF_BASE=./public/books/ vite build && node scripts/finalize.mjs --root",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -22,11 +22,12 @@ To add a book: put the PDF in `public/books/`, then add an entry (id, title, sub
 ## Develop
 ```
 npm install
-npm run dev
+npm run dev               # serves app.html (the source entry)
 npm run typecheck
-npm run build:github      # set VITE_PDF_BASE=./books/ so PDFs load from /books
+npm run build:github      # CI build: dist/index.html (VITE_PDF_BASE=./books/)
+npm run build:pages       # rebuilds the committed ./index.html for branch-based Pages
 ```
-CI (`.github/workflows/build.yml`) type-checks and builds on every push. `.github/workflows/pages.yml` deploys `dist` to GitHub Pages on every push to `main` (repo Settings > Pages > Source: GitHub Actions).
+The source entry is `app.html`. The root `index.html` is the **built** site, committed so GitHub Pages works whether its source is "Deploy from a branch" (main, root) or "GitHub Actions". After changing code, run `npm run build:pages` and commit `index.html`. `.github/workflows/build.yml` type-checks and builds on every push, and `.github/workflows/pages.yml` deploys `dist` when Pages is set to GitHub Actions.
 
 On the Pages site the app runs in preview mode: library, reader and PDFs work, and payment buttons send people to the full app (`ARTIFACT_URL` in `components/useClub.ts`) so no payment is taken that the site cannot fulfil.
 
